@@ -1,6 +1,6 @@
 # Azure DevOps MCP Server
 
-A Model Context Protocol (MCP) server that integrates Azure DevOps with Claude Code and other MCP-compatible clients. This server allows you to fetch work item details and update work item statuses directly from your AI assistant.
+A Model Context Protocol (MCP) server that integrates Azure DevOps with VS Code/GitHub Copilot and other MCP-compatible clients. This server allows you to fetch work item details and update work item statuses directly from your AI assistant.
 
 ## Features
 
@@ -23,7 +23,7 @@ A Model Context Protocol (MCP) server that integrates Azure DevOps with Claude C
 ### Option 1: Install from GitHub (Easiest for Users)
 
 ```bash
-pip install git+https://github.com/yourusername/ado-mcp.git
+pip install git+https://github.com/Akshay-Quorum2145/ADO-MCP.git
 ```
 
 **MCP Config (without venv):**
@@ -92,68 +92,53 @@ pip install git+https://github.com/yourusername/ado-mcp.git
 5. Click **Create**
 6. **IMPORTANT**: Copy the token immediately (you won't be able to see it again)
 
-### Step 2: Configure Environment Variables
+### Step 2: Configure VS Code / GitHub Copilot
 
-1. Copy the example environment file:
-   ```bash
-   cp .env.example .env
-   ```
+Create an MCP configuration file in your workspace or global settings:
 
-2. Edit `.env` and fill in your values:
-   ```env
-   ADO_ORGANIZATION=your-organization-name
-   ADO_PROJECT=your-project-name
-   ADO_PAT=your-personal-access-token
-   ```
+**Create `.vscode/mcp.json` or your MCP config location:**
 
-   - `ADO_ORGANIZATION`: Your Azure DevOps organization name (from the URL: `https://dev.azure.com/[organization]`)
-   - `ADO_PROJECT`: Your project name
-   - `ADO_PAT`: The Personal Access Token you created in Step 1
+**Without venv:**
+```json
+{
+  "servers": {
+    "ado": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["-m", "ado_mcp.server"],
+      "env": {
+        "ADO_ORGANIZATION": "your-organization-name",
+        "ADO_PROJECT": "your-project-name",
+        "ADO_PAT": "your-personal-access-token"
+      }
+    }
+  }
+}
+```
 
-### Step 3: Configure Claude Code
+**With venv (use full Python path):**
+```json
+{
+  "servers": {
+    "ado": {
+      "type": "stdio",
+      "command": "C:\\path\\to\\venv\\Scripts\\python.exe",
+      "args": ["-m", "ado_mcp.server"],
+      "env": {
+        "ADO_ORGANIZATION": "your-organization-name",
+        "ADO_PROJECT": "your-project-name",
+        "ADO_PAT": "your-personal-access-token"
+      }
+    }
+  }
+}
+```
 
-Add the server to your Claude Code MCP settings:
-
-1. Open your MCP settings file:
-   - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
-   - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-   - Linux: `~/.config/Claude/claude_desktop_config.json`
-
-2. Add the ADO MCP server configuration:
-   ```json
-   {
-     "mcpServers": {
-       "ado": {
-         "command": "python",
-         "args": ["-m", "ado_mcp.server"],
-         "env": {
-           "ADO_ORGANIZATION": "your-organization-name",
-           "ADO_PROJECT": "your-project-name",
-           "ADO_PAT": "your-personal-access-token"
-         }
-       }
-     }
-   }
-   ```
-
-   Or, to use the `.env` file approach (recommended for security):
-   ```json
-   {
-     "mcpServers": {
-       "ado": {
-         "command": "python",
-         "args": ["-m", "ado_mcp.server"],
-         "cwd": "C:\\Users\\akshay.bachkar\\Downloads\\ADO-MCP"
-       }
-     }
-   }
-   ```
-
-3. Restart Claude Code
+Restart VS Code.
 
 ## Usage
 
-Once configured, you can interact with Azure DevOps through Claude Code:
+Once configured, you can interact with Azure DevOps through GitHub Copilot Chat or any MCP-compatible client:
 
 ### Get Work Item Details
 
